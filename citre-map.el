@@ -939,13 +939,19 @@ When PROJECT is specified, save the code map of PROJECT."
          (readfrom (read-file-name "Read from: " dir nil t filename)))
     (unless (string-empty-p readfrom)
       (let* ((data (citre--read-value-from-file readfrom))
-             (project (plist-get data :project-root)))
+             (project (plist-get data :project-root))
+             (map (plist-get data :map))
+             (pos (plist-get data :position)))
+        ;; We don't require MAP to be presented since you can actually save an
+        ;; empty code map, though that's not very interesting.
+        (unless (and project pos)
+          (user-error "The file is not a code map, or is corrupted"))
         (when (or (not (car (citre--get-code-map-disk-state project)))
                   (y-or-n-p
                    (format "Current code map of %s is not saved.  Continue? "
                            project)))
-          (setf (citre--get-in-code-map nil nil project) (plist-get data :map))
-          (setf (citre--code-map-position project) (plist-get data :position))
+          (setf (citre--get-in-code-map nil nil project) map)
+          (setf (citre--code-map-position project) pos)
           (citre--set-code-map-disk-state nil readfrom project)
           (citre--open-code-map project 'current-window)
           (message "Code map of %s loaded" project))))))

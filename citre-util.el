@@ -348,13 +348,13 @@ root dir."
            (tagsfile nil))
       (while (and current-dir (null tagsfile))
         (setq tagsfile
-              (or (and (local-variable-p citre-tags-file-alist)
+              (or (and (local-variable-p 'citre-tags-file-alist)
                        (citre--find-tags-by-tags-file-alist
                         current-dir project citre-tags-file-alist))
-                  (and (default-value citre-tags-file-alist)
+                  (and (default-value 'citre-tags-file-alist)
                        (citre--find-tags-by-tags-file-alist
                         current-dir project (default-value
-                                              citre-tags-file-alist)))
+                                              'citre-tags-file-alist)))
                   (and citre-tags-file-cache-dirs
                        (citre--find-tags-in-cache-dirs current-dir project))
                   (and citre-tags-files
